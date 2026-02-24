@@ -50,4 +50,5 @@ Again: this is a **simulation** for architectural demonstration only.
 - **GitHub Actions** + **GitHub Pages** for CI/CD and hosting
 
 ---
-<video src="20260224-1616-30.3854420.mp4" controls title="Title"></video>
+
+![Alt text](image.png)
