@@ -1,41 +1,46 @@
-name: Deploy Angular App to GitHub Pages
+name: Deploy Angular health-sensor-monitor to GitHub Pages
 
 on:
   push:
     branches:
       - main
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Build Angular project
-      run: npm run build -- --configuration production --base-href "https://vinaygs911.github.io/timeseries-visualizer/"
+      - name: Build Angular project
+        run: npm run build -- --configuration production --base-href "https://vinaygs911.github.io/health-sensor-monitor/"
 
-    - name: Verify build output
-      run: |
-        if [ -d "dist/demo/browser" ] && [ -f "dist/demo/browser/index.html" ]; then
-          echo "Build output verified."
-        else
-          echo "Build output verification failed."
-          exit 1
-        fi
+      - name: Verify build output
+        run: |
+          echo "Listing dist/demo:"
+          ls -R dist/demo || true
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        personal_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        publish_branch: gh-pages
-        publish_dir: dist/demo/browser
+          if [ -d "dist/demo/browser" ] && [ -f "dist/demo/browser/index.html" ]; then
+            echo "Build output verified: dist/demo/browser"
+          else
+            echo "Build output verification failed."
+            exit 1
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: dist/demo/browser
